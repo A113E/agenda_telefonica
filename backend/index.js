@@ -120,13 +120,7 @@ app.post('/api/persons', (request, response) => {
         });
     }
 
-    // Validación: El nombre debe ser único
-    const nameExists = persons.some(person => person.name === body.name);
-    if (nameExists) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        });
-    }
+
 
     // Creación del nuevo objeto 'person'
     const person = new Person ({
