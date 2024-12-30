@@ -28,7 +28,7 @@ mongoose.connect(url);
 // Define el Esquema - Schema
 const personSchema = new mongoose.Schema({
     name: String, // Define el argumento name como cadena
-    phone: String // Define el argumento phone como cadena
+    phone: String, // Define el argumento phone como cadena
 });
 
 // Crea un modelo basado en el esquema definido

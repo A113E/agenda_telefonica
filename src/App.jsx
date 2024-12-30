@@ -14,7 +14,7 @@ const App = () => {
   // Estados de la aplicación
   const [persons, setPersons] = useState([]); // Estado para la lista de personas registradas comienza con un valor vacío
   const [newName, setNewName] = useState(''); // Estado para agregar un nuevo nombre
-  const [newNumber, setNewNumber] = useState(''); // Estado para agregar un nuevo número
+  const [newPhone, setNewPhone] = useState(''); // Estado para agregar un nuevo número
   const [searchTerm, setSearchTerm] = useState(''); // Estado para buscar personas
   const [notification, setNotification] = useState({ message: '', type: '' }); // Estado para mostrar una notificación
 
@@ -35,7 +35,7 @@ const App = () => {
 
   // Manejadores de eventos
   const handleNameChange = (event) => setNewName(event.target.value); // Evento para agregar nuevo nombre
-  const handleNumberChange = (event) => setNewNumber(event.target.value); // Evento para agregar nuevo número
+  const handlePhoneChange = (event) => setNewPhone(event.target.value); // Evento para agregar nuevo número
   const handleSearchChange = (event) => setSearchTerm(event.target.value); // Evento para buscar personas
   const handleDelete = (id) => { // Evento para eliminar registro
     const personToDelete = persons.find(person => person.id === id); // Encuentra la persona dentro del array
@@ -66,7 +66,7 @@ const App = () => {
   
       if (confirmUpdate) {
         // Creamos un nuevo objeto con el número actualizado
-        const updatedPerson = { ...existingPerson, number: newNumber };
+        const updatedPerson = { ...existingPerson, phone: newPhone };
   
         // Enviamos una solicitud PUT para actualizar el registro
         personsService // Servicio para actualizar el registro
@@ -77,7 +77,7 @@ const App = () => {
               person.id !== existingPerson.id ? person : returnedPerson
             ));
             setNewName('');
-            setNewNumber('');
+            setNewPhone('');
             showNotification(`Updated ${returnedPerson.name}`, 'success');
           })
           .catch(error => {
@@ -93,14 +93,14 @@ const App = () => {
       // Si no existe, creamos un nuevo registro
       const personObject = {
         name: newName,
-        number: newNumber,
+       phone: newPhone,
       };
   
       // Enviamos una solicitud PUT para crear un nuevo registro
       personsService.create(personObject).then(returnedPerson => {
         setPersons(persons.concat(returnedPerson));
         setNewName('');
-        setNewNumber('');
+        setNewPhone('');
         showNotification(`Added ${returnedPerson.name}`, 'success');
       })
         .catch(error => {
@@ -125,9 +125,9 @@ const App = () => {
       <h2>Add a New</h2>
       <PersonForm
         newName={newName}
-        newNumber={newNumber}
+        newPhone={newPhone}
         onNameChange={handleNameChange}
-        onNumberChange={handleNumberChange}
+        onPhoneChange={handlePhoneChange}
         onSubmit={addPerson}
       />
       <h2>Numbers</h2>
