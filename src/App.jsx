@@ -76,7 +76,7 @@ const App = () => {
             setPersons(persons.map(person => 
               person.id !== existingPerson.id ? person : returnedPerson
             ));
-            setNewName('');
+            setNewName(''); // Entonces actualiza el array con los cambios actualizados en ese id por el nuevo nombre
             setNewPhone('');
             showNotification(`Updated ${returnedPerson.name}`, 'success');
           })
@@ -98,9 +98,9 @@ const App = () => {
   
       // Enviamos una solicitud PUT para crear un nuevo registro
       personsService.create(personObject).then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName('');
-        setNewPhone('');
+        setPersons(persons.concat(returnedPerson)); // Método concat para agregar el nuevo registro al array persons
+        setNewName(''); // Actualizamos el estado con el nuevo nombre
+        setNewPhone(''); // Actualizamos el estado con el nuevo numero
         showNotification(`Added ${returnedPerson.name}`, 'success');
       })
         .catch(error => {
