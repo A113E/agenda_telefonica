@@ -9,6 +9,8 @@ import PersonsList from './components/PersonList';
 import Notification from './components/Notification';
 
 
+
+
 // Componente Principal
 const App = () => {
   // Estados de la aplicación
@@ -17,6 +19,9 @@ const App = () => {
   const [newPhone, setNewPhone] = useState(''); // Estado para agregar un nuevo número
   const [searchTerm, setSearchTerm] = useState(''); // Estado para buscar personas
   const [notification, setNotification] = useState({ message: '', type: '' }); // Estado para mostrar una notificación
+  const [errorMessage, setErrorMessage] = useState(''); // Nuevo estado para manejar errores
+  
+
 
   // Hook useEffect: se ejecuta una vez al cargar el componente para obtener todas las personas desde el servidor.
   useEffect(() => {
@@ -53,14 +58,16 @@ const App = () => {
     }
   };
 
-  const addPerson = (event) => { // Función para agregar una nueva persona usando el evento
+  // Función para añadir nueva persona
+  const addPerson = (event) => {
     event.preventDefault(); // Evita que el formulario recargue la página.
-  
-    const existingPerson = persons.find(person => person.name === newName); // Creamos una variable para personas ya registradas
-  
-    if (existingPerson) {
-      // Si la persona ya existe, pedimos confirmación
-      const confirmUpdate = window.confirm(
+
+ 
+   // Creamos una instancia para personas existentes
+    const existingPerson = persons.find(person => person.name === newName); // Verificamos si la persona ya existe usando el método Find
+    // Condicion
+    if (existingPerson) { // Si la persona ya existe en la base de datos 
+      const confirmUpdate = window.confirm( // Mostramos un mensaje de windows confirmando la actualización
         `${newName} is already added to the phonebook, replace the old number with a new one?`
       );
   
@@ -76,7 +83,7 @@ const App = () => {
             setPersons(persons.map(person => 
               person.id !== existingPerson.id ? person : returnedPerson
             ));
-            setNewName(''); // Entonces actualiza el array con los cambios actualizados en ese id por el nuevo nombre
+            setNewName('');
             setNewPhone('');
             showNotification(`Updated ${returnedPerson.name}`, 'success');
           })
@@ -96,19 +103,30 @@ const App = () => {
        phone: newPhone,
       };
   
-      // Enviamos una solicitud PUT para crear un nuevo registro
-      personsService.create(personObject).then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson)); // Método concat para agregar el nuevo registro al array persons
-        setNewName(''); // Actualizamos el estado con el nuevo nombre
-        setNewPhone(''); // Actualizamos el estado con el nuevo numero
+      personsService.create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName('');
+        setNewPhone('');
         showNotification(`Added ${returnedPerson.name}`, 'success');
       })
-        .catch(error => {
-          console.error('Error adding person:', error);
-          showNotification('Error adding person. Please try again.', 'error');
-        });
-      }
-    };
+      .catch(error => {
+        console.error('Error adding person:', error);
+
+        // Mostrar un mensaje de error en caso de problemas con la creación
+        if (error.response && error.response.data && error.response.data.error) {
+          showNotification(error.response.data.error, 'error'); // Mensaje de error proporcionado por el backend
+        } else {
+          showNotification('Error adding person. Please try again.', 'error'); // Mensaje genérico
+        }
+      });
+  }
+};
+  
+
+  
+    
+    
   
   // Funcion para mostrar la lista de personas
   const personsToShow = searchTerm ? persons.filter(person => 
